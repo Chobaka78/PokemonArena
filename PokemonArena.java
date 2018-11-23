@@ -14,7 +14,7 @@ public class PokemonArena{
 			System.out.println(PokemonArray);
 		}
 		catch(IOException ex){
-			System.out.println("Umm, where is nums.txt?");
+			System.out.println("Where is pokemon.txt?");
 		}
 	}
 }
