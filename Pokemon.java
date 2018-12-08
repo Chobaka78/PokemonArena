@@ -14,12 +14,9 @@ public class Pokemon{
 		resistance = items[3];
 		weakness = items[4];
 		nums_attack = Integer.parseInt(items[5]);
-		leastEnergy = Integer.parseInt(items[7]);
 		for (int i = 0; i < nums_attack; i ++){
 			attack.add(new Attack(items[6 + i*4], Integer.parseInt(items[7 + i*4]), Integer.parseInt(items[8 + i*4]), items[9 + i*4]));
-			if(attack.get(i).energy < leastEnergy){
-				leastEnergy = attack.get(i).energy;
-			}	
+			leastEnergy = Integer.parseInt(items[7 + i*4]);
 		}
 		startHP = Integer.parseInt(items[1]);
 	}
@@ -27,19 +24,9 @@ public class Pokemon{
 	public String toString(){
 		return  name;
 	}
-	
-	// class Attack{
-	// 	String name, effect;
-	// 	int energy, damage;
-	// 	public Attack(String name, int energy, int damage, String effect){
-	// 		this.name = name;
-	// 		this.energy = energy;
-	// 		this.damage = damage;
-	// 		this.effect = effect;
-	// 	}
-	// 	// public int getDamage(){
-	// 	// 	return damage;
-	// 	// }
-	// }
-	
 }
+
+
+
+
+

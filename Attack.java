@@ -8,19 +8,4 @@ public class Attack{
 			this.damage = damage;
 			this.effect = effect;
 		}
-		public String getName(){
-			return name;
-		}
-
-		public int getEnergy(){
-			return energy;
-		}
-
-		public int getDamage(){
-			return damage;
-		}
-
-		public String getEffect(){
-			return effect;
-		}
 	}
