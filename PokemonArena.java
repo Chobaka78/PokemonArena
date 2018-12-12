@@ -24,10 +24,11 @@ public class PokemonArena{
 				break;
 			}
 
+			// this writes the amount of pokemons the player had remaining on to a file as a highscore
 			String str = (name + ", " + PokemonArray.size() + " pokemons remaining");
 
-			BufferedWriter writer = new BufferedWriter(new FileWriter("HighScore.txt", true));
-    		writer.newLine();
+			BufferedWriter writer = new BufferedWriter(new FileWriter("HighScore.txt", true)); 
+    		writer.newLine(); // adds a line after every game
     		writer.append(str);
      
     		writer.close();
@@ -38,8 +39,8 @@ public class PokemonArena{
 		int answer = 0;
 		System.out.println("WELCOME TO POKEMON ARENA!!!");
 		System.out.println("\n" + "Please enter your name: ");
-		name = kb.nextLine().toUpperCase();
-		System.out.println("Hello there, " + name + " are you ready to play pokemon Arena?");
+		name = kb.nextLine();
+		System.out.println("Hello there, " + name + ", are you ready to play pokemon Arena?");
 		System.out.println("1.YES" + "\n" + "2.NO");
 		answer = kb.nextInt();
 
@@ -140,8 +141,8 @@ public class PokemonArena{
 		while(true){
 			battle();
 			if(user.hp == 0){ //If the user pokemon had fainted 
-				System.out.println("Oh no! " + user.name + "has fainted");
-				System.out.println("\n" + "---END BATTLE---" + "\n"); // end the battle
+				System.out.println("Oh no! " + user.name + " has fainted");
+				System.out.println("\n" + "------END BATTLE------" + "\n"); // end the battle
 				pokemonTeam.remove(user);
 				chooseUser();
 				for(int i = 0; i < pokemonTeam.size(); i++){
@@ -149,7 +150,7 @@ public class PokemonArena{
 				}
 				disable = false; // enemy pokemon has fainted so disable is set to false
 				randomTurn(); // randomize the turn again
-				System.out.println("\n" + "-----BATTLE-----" + "\n");
+				System.out.println("\n" + "------BATTLE------" + "\n");
 			}
 			if(enemy.hp == 0){ // if the enemy pokemon has fainted
 				System.out.println(enemy.name + " has no hp left " + enemy.name + " has fainted");
@@ -179,7 +180,7 @@ public class PokemonArena{
 					pokemonTeam.get(i).energy = 50;
 				}
 				disable = false; // user pokemon has fainted so disalbe is set to false
-				System.out.println("\n" + "-----BATTLE-----" + "\n");
+				System.out.println("\n" + "------BATTLE------" + "\n");
 			}
 			if(pokemonTeam.size() == 0){ // checks if all the users pokemons have fainted and the prints out that the user lost
 				endgame();
@@ -198,7 +199,7 @@ public class PokemonArena{
 			if(pokemonTeam.size() > 0){
 				System.out.println(user.name + " has " + user.energy + " energy");
 				int choice;
-				if(user.energy < user.leastEnergy){
+				if(user.energy < user.energy_cost){
 					System.out.println("You don't have enough energy for this attack");
 					choice = 2;
 				}
@@ -208,7 +209,7 @@ public class PokemonArena{
 			    	choice = kb.nextInt();
 				}
 				if(choice == 1){
-					System.out.println("You have " + user.nums_attack + " attacks to choose from:");
+					System.out.println("You have " + user.nums_attack + " attacks to choose from " + "     " + user.hp + " hp || " + user.energy + " energy");
 					for (int i = 0; i < user.nums_attack; i++){
 			    		System.out.println(i+1 + ". " + user.attack.get(i).name + ", Energy: " + user.attack.get(i).energy + ", Damage: " + user.attack.get(i).damage + ", Effect: " + user.attack.get(i).effect);
 					}
@@ -251,7 +252,7 @@ public class PokemonArena{
 
 		if(turn == false){
 			if(enemy.hp != 0){
-				if(enemy.leastEnergy <= enemy.energy){
+				if(enemy.energy_cost <= enemy.energy){
 					int e_attpick = (int)(Math.random()*enemy.nums_attack); // randomly choose from attacks
 					while(true){
 						System.out.println("\n" + "-----Start round-----" + "\n");
@@ -292,6 +293,7 @@ public class PokemonArena{
 		stunned = false;
 
 		System.out.println(attacker.name + " attacked " + attacked.name + " with " + attacker.attack.get(number).name);
+
 		if(attacker.type.equals(attacked.resistance)){
 			System.out.println("This attack wasnt very effective");
 			damage = damage/2;
@@ -331,24 +333,28 @@ public class PokemonArena{
 				System.out.println(attacked.name + " was stunned");
 				stunned = true;
 			}
-		}
-
-		else if(disable == false){
-			disable = true;
-			System.out.println(attacked.name + " was disabled for this battle");
-			for(int i = 0; i < attacked.nums_attack; i++){
-				if(attacked.attack.get(i).damage > 0){
-					attacked.attack.get(i).damage -= 10;
-					if(attacked.attack.get(i).damage < 0){
-						attacked.attack.get(i).damage = 0;
-					}
-				}
-			}
+			else{
+				System.out.println(attacker.name + " failed to stun" + attacked.name);
+				stunned = false;
+			}	
 		}
 
 		else if(effect.equals("recharge")){
 			attacker.energy += 20;
 		}
+
+		else if(effect.equals("disable")){ // fix disable beacuse its not minus 10 its minus 10 once
+			if(disable == false){
+				disable = true;
+				System.out.println(attacked.name + " was disabled for this battle");
+				for (int i = 0; i < attacked.nums_attack; i++){
+					if(attacked.attack.get(i).damage > 0){
+						attacked.attack.get(i).damage -= 10;
+					}
+				}
+			}
+		}
+
 		else{
 			System.out.println("This attack had no effect");
 		}
@@ -356,9 +362,9 @@ public class PokemonArena{
 		attacked.hp -= damage;
 		attacked.hp = Math.max(0,attacked.hp);
 		attacker.energy -= cost;
-		System.out.println(attacked.name + " has " + attacked.hp + " hp left.");
+		System.out.println(enemy.name + " has " + enemy.hp + " hp, || " + enemy.energy + " energy");
 		if(attacked.hp > 0){
-			System.out.println("\n" + "---End round---" + "\n");
+			System.out.println("\n" + "------End round------" + "\n");
 		}
 	}
 	public static void endgame(){
